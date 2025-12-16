@@ -8,6 +8,6 @@ namespace Domain.Interfaces.Services
 {
    public interface IClipApiService
    {
-      float[] ObtenerImagenEnbedding(Stream imagenStream);
+      float[] ObtenerImagenEmbedding(Stream imagenStream);
    }
 }

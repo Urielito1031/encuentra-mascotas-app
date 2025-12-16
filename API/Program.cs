@@ -1,7 +1,11 @@
 using Application.Services;
 using Application.UseCases.Publicaciones.CrearPublicacion;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Infraestructure;
 using Infraestructure.Data.Contexts;
+using Infraestructure.Repositories;
+using Infraestructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +31,11 @@ builder.Services.AddSwaggerGen();
 string modelPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "clip-model.onnx");
 
 
-builder.Services.AddSingleton<IClipApiService>(sp => new ClipApiService(modelPath));
+builder.Services.AddSingleton<IClipApiService>(sp => new ClipVectorizacionService(modelPath));
+builder.Services.AddScoped<IImagenEmbeddingService, ImagenEmbeddingService>();
+builder.Services.AddScoped<IPublicacionRepository, PublicacionRepository>();
+builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+builder.Services.AddScoped<IMascotaRepository, MascotaRepository>();
 
 var app = builder.Build();
 

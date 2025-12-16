@@ -46,12 +46,23 @@ namespace Application.UseCases.Publicaciones.CrearPublicacion
           request.Descripcion,
           request.FechaPerdido,
           request.EstadoMascota
-      );
-
-         //ver logica agregar foto!
+          );
+         int orden = 0;
+         foreach(var fotoFile in request.Fotos)
+         {
+            using var stream = fotoFile.OpenReadStream();
+            var vector = _embeddingService.GenerarEmbedding(stream);
+            var foto = Foto.Crear(
+               url: "con blob storage",  // TODO: Implementar
+               publicacionId: publicacion.Id,
+               embeddingVector: vector,
+               orden: orden++
+               );
+         
+            publicacion.AgregarFoto(foto);
+         };
 
          await _repository.AgregarAsync(publicacion);
-
          return new CrearPublicacionResult(publicacion.Id);
 
       }

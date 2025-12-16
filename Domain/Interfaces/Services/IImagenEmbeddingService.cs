@@ -9,6 +9,6 @@ namespace Domain.Interfaces.Services
 {
    public interface IImagenEmbeddingService
    {
-      Vector GenerarEmbedding(Stream imagen);
+     public Vector GenerarEmbedding(Stream imagen);
    }
 }
