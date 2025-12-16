@@ -1,0 +1,28 @@
+﻿services:
+  mascotas-db:
+    image: pgvector/pgvector:pg16
+    container_name: mascotas_postgres_container
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    shm_size: 1g
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: mascotas_pgadmin_container
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - mascotas-db
+
+volumes:
+  postgres_data:
