@@ -16,7 +16,7 @@ namespace Infraestructure.Services
       public Vector GenerarEmbedding(Stream imagen)
       {
          //obtener vector con CLIP
-         var floatArray = _clipService.ObtenerImagenEmbedding(imagen);
+         float[] floatArray = _clipService.ObtenerImagenEmbedding(imagen);
          if (floatArray.Length != 512)
          {
             throw new InvalidOperationException($"Vector debe tener 512 dimensiones, tiene {imagen.Length}");

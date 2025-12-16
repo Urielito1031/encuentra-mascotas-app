@@ -8,6 +8,7 @@ using Domain.Enums;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using MediatR;
+using Pgvector;
 
 namespace Application.UseCases.Publicaciones.CrearPublicacion
 {
@@ -17,18 +18,21 @@ namespace Application.UseCases.Publicaciones.CrearPublicacion
       private readonly IMascotaRepository      _mascotaRepository;
       private readonly IUbicacionRepository    _ubicacionRepository;
       private readonly IImagenEmbeddingService _embeddingService;
+      private readonly IFileStorageService     _fileStorageService;
 
       public CrearPublicacionUseCase(
 
          IPublicacionRepository repository,
          IMascotaRepository mascotaRepository,
          IUbicacionRepository ubicacionRepository,
-         IImagenEmbeddingService embeddingService)
+         IImagenEmbeddingService embeddingService,
+         IFileStorageService fileStorageService)
       {
          _repository = repository;
          _mascotaRepository = mascotaRepository;
          _ubicacionRepository = ubicacionRepository;
          _embeddingService = embeddingService;
+         _fileStorageService = fileStorageService;
       }
 
       public async Task<CrearPublicacionResult> Handle(
@@ -50,10 +54,13 @@ namespace Application.UseCases.Publicaciones.CrearPublicacion
          int orden = 0;
          foreach(var fotoFile in request.Fotos)
          {
+            string url = await _fileStorageService.SubirArchivoAsync(fotoFile, nombreContenedor: "publicaciones");
             using var stream = fotoFile.OpenReadStream();
-            var vector = _embeddingService.GenerarEmbedding(stream);
+            Vector vector = _embeddingService.GenerarEmbedding(stream);
+
+
             var foto = Foto.Crear(
-               url: "con blob storage",  // TODO: Implementar
+               url: url,  
                publicacionId: publicacion.Id,
                embeddingVector: vector,
                orden: orden++
