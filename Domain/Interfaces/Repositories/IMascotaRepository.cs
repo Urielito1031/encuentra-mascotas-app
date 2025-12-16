@@ -12,7 +12,7 @@ namespace Domain.Interfaces.Repositories
    {
       Task AgregarAsync(Mascota mascota);
       Task<List<Mascota>> BuscarSimilaresAsync(Vector vectorBusqueda, int limite =20);
-      Task<Mascota?>ObtenerPorIdAsync(int id);
+      Task<Mascota?>ObtenerPorIdAsync(Guid id);
 
    }
 }

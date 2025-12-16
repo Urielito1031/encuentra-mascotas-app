@@ -6,7 +6,5 @@ using System.Threading.Tasks;
 
 namespace Application.UseCases.Publicaciones.CrearPublicacion
 {
-   public class CrearPublicacionResult
-   {
-   }
+   public sealed record CrearPublicacionResult(Guid PublicacionId);
 }

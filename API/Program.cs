@@ -1,9 +1,8 @@
-using System;
 using Application.Services;
+using Application.UseCases.Publicaciones.CrearPublicacion;
 using Domain.Interfaces.Services;
 using Infraestructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +15,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
           o.MigrationsAssembly("Infraestructure");
        })
     );
+
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(CrearPublicacionCommand).Assembly));
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

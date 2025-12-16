@@ -29,7 +29,7 @@ namespace Infraestructure
             .ToListAsync();
       }
 
-      public async Task<Mascota?> ObtenerPorIdAsync(int id)
+      public async Task<Mascota?> ObtenerPorIdAsync(Guid id)
       {
          return await _context.Mascotas.FindAsync(id);
       }
