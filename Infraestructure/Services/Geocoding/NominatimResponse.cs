@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace Infraestructure.Services.Geocoding
 {
+
+   //JSON DESERIALIZADO
    internal sealed class NominatimResponse
    {
       public string lat {  get; set; }
       public string lon { get; set; }
-      public Address Address { get; set; }
+      public Address address { get; set; }
       
-      internal sealed class Adress
+      internal sealed class Address
       {
          public string state { get; set; }
          public string state_district { get; set; }

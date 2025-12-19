@@ -10,6 +10,9 @@ namespace Domain.Interfaces.Services
    {
       Task<GeocodingResult> GeocodificarAsync(string direccion);
    }
+
+   //Pasa del JSON deserializado NominatimResponse a GeocodingResult
+   //es el resultado limpio del sistema.
    public sealed record GeocodingResult(
        string Provincia,
        string Distrito,

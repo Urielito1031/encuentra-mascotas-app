@@ -10,6 +10,7 @@ namespace Domain.Interfaces.Repositories
    public interface IUbicacionRepository
    {
       Task<Ubicacion?> ObtenerPorIdAsync(Guid id);
+      Task AgregarAsync(Ubicacion ubicacion);
 
    }
 }

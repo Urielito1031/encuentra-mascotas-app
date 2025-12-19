@@ -25,13 +25,12 @@ namespace Infraestructure.Services.Geocoding
              $"?q={Uri.EscapeDataString(direccion)}" +
              $"&format=json&addressdetails=1&limit=1";
 
-         var response = await _http
-             .GetFromJsonAsync<List<NominatimResponse>>(url);
+         var response = await _http.GetFromJsonAsync<List<NominatimResponse>>(url);
 
          var item = response?.FirstOrDefault()
              ?? throw new Exception("No se pudo geocodificar la dirección");
 
-         var address = item.Address;
+         var address = item.address;
 
          return new GeocodingResult(
              Provincia: address.state,
