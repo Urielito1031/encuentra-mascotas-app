@@ -1,7 +1,6 @@
-﻿using Application.UseCases.Publicaciones.CrearPublicacion;
+﻿using Application.UseCases.Publicaciones.PublicarMascotaPerdida;
 using encuentra_mascotas.Contracts.Requests;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace encuentra_mascotas.Controllers
@@ -17,27 +16,19 @@ namespace encuentra_mascotas.Controllers
          _mediator = mediator;
       }
 
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      public async Task<IActionResult> Crear([FromForm] CrearPublicacionRequest request)
+      [HttpPost("mascota-perdida")]
+      [Consumes("multipart/form-data")]
+      public async Task<IActionResult> PublicarMascotaPerdida([FromForm] PublicarMascotaPerdidaRequest request)
       {
          // por ahora simulamos el id
          // En el futuro esto vendrá de: User.Claims.FirstOrDefault(c => c.Type == "id")?.Value
          var usuarioId = Guid.Parse("d3f82a92-1234-4567-89ab-cdef01234567");
         
-         var command = new CrearPublicacionCommand(
-            UsuarioId: usuarioId,
-            MascotaId: request.MascotaId,
-            UbicacionId: request.UbicacionId,
-            Descripcion: request.Descripcion,
-            FechaPerdido: request.FechaPerdido,
-            EstadoMascota: request.EstadoMascota,
-            Fotos: request.Fotos
-            );
+         var command = request.ToCommand(usuarioId);
 
          var result = await _mediator.Send(command);
          return CreatedAtAction(
-            nameof(Crear), 
+            nameof(PublicarMascotaPerdida), 
             new { id = result.PublicacionId }, 
             result
             );
