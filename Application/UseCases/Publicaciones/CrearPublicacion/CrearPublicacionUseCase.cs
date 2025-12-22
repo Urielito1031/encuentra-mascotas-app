@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common.Storage;
 using Domain.Entities;
 using Domain.Enums;
 using Domain.Interfaces.Repositories;
@@ -54,7 +55,7 @@ namespace Application.UseCases.Publicaciones.CrearPublicacion
          int orden = 0;
          foreach(var fotoFile in request.Fotos)
          {
-            string url = await _fileStorageService.SubirArchivoAsync(fotoFile, nombreContenedor: "publicaciones");
+            string url = await _fileStorageService.SubirArchivoAsync(fotoFile, ContenedoresBlob.Publicaciones);
             using var stream = fotoFile.OpenReadStream();
             Vector vector = _embeddingService.GenerarEmbedding(stream);
 

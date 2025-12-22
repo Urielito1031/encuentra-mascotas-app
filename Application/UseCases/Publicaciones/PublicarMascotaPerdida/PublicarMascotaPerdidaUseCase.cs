@@ -50,7 +50,7 @@ namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
          var mascota = Mascota.Crear(
             request.NombreMascota,
             request.RazaId,
-            request.colorPrincipal,
+            request.ColorPrincipal,
             request.DescripcionMascota,
             request.TamanioMascota,
             request.Sexo

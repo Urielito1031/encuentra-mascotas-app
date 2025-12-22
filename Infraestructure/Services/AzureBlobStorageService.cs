@@ -1,8 +1,9 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models; 
 using Domain.Interfaces.Services;
+using Infraestructure.Storage;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace EncuentraMascotas.Infrastructure.Services
 {
@@ -10,11 +11,9 @@ namespace EncuentraMascotas.Infrastructure.Services
    {
       private readonly BlobServiceClient _clientBlob;
 
-      public AzureBlobStorageService(IConfiguration configuration)
+      public AzureBlobStorageService(IOptions<AzureBlobOptions> options)
       {
-         // TODO: ver cadena de conexion a blob storage
-         string keys = configuration.GetConnectionString("AzureStorage");
-         _clientBlob = new BlobServiceClient(keys);
+         _clientBlob = new BlobServiceClient(options.Value.ConnectionString);
       }
 
       public async Task<string> SubirArchivoAsync(IFormFile archivo, string nombreContenedor)

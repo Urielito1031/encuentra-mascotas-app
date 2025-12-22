@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 using Domain.Interfaces.Services;
 
 namespace Infraestructure.Services.Geocoding
@@ -20,12 +15,10 @@ namespace Infraestructure.Services.Geocoding
 
       public async Task<GeocodingResult> GeocodificarAsync(string direccion)
       {
-         var url =
-             $"https://nominatim.openstreetmap.org/search" +
-             $"?q={Uri.EscapeDataString(direccion)}" +
-             $"&format=json&addressdetails=1&limit=1";
 
-         var response = await _http.GetFromJsonAsync<List<NominatimResponse>>(url);
+         var response = await _http.GetFromJsonAsync<List<NominatimResponse>>(
+            $"search?q={Uri.EscapeDataString(direccion)}&format=json&addressdetails=1&limit=1"
+            );
 
          var item = response?.FirstOrDefault()
              ?? throw new Exception("No se pudo geocodificar la dirección");

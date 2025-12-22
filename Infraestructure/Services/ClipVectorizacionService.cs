@@ -1,5 +1,4 @@
 ﻿using Domain.Interfaces.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using SixLabors.ImageSharp;

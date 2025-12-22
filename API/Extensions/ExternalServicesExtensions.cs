@@ -1,6 +1,8 @@
 ﻿using Application.Services;
 using Domain.Interfaces.Services;
+using EncuentraMascotas.Infrastructure.Services;
 using Infraestructure.Services.Geocoding;
+using Infraestructure.Storage;
 using Microsoft.Extensions.Options;
 
 namespace encuentra_mascotas.Extensions

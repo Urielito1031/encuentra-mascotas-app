@@ -14,7 +14,7 @@ namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
      //mascota
      string NombreMascota,
      Guid RazaId,
-     string colorPrincipal,
+     string ColorPrincipal,
      string DescripcionMascota,
      TamanioMascota TamanioMascota,
      Sexo Sexo,
