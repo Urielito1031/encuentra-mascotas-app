@@ -2,6 +2,7 @@
 using Domain.Interfaces.Services;
 using Infraestructure.Exceptions;
 using Pgvector;
+using SixLabors.ImageSharp;
 
 namespace Infraestructure.Services
 {
@@ -16,16 +17,23 @@ namespace Infraestructure.Services
 
       public Vector GenerarEmbedding(Stream imagen)
       {
-         //obtener vector con CLIP
-         float[] floatArray = _clipService.ObtenerImagenEmbedding(imagen);
-         if (floatArray.Length != 512)
+         try
          {
-            throw new EmbeddingException($"Vector debe tener 512 dimensiones, tiene {floatArray.Length}");
-         }
+            //obtener vector con CLIP
+            float[] floatArray = _clipService.ObtenerImagenEmbedding(imagen);
+            if (floatArray.Length != 512)
+            {
+               throw new EmbeddingException($"Vector debe tener 512 dimensiones, tiene {floatArray.Length}");
+            }
 
-         
-         var vector = new Vector(floatArray);
-         return vector;
+            
+            var vector = new Vector(floatArray);
+            return vector;
+         }
+         catch (UnknownImageFormatException)
+         {
+            throw new EmbeddingException("Formato de imagen no soportado. Solo se permiten formatos como JPEG, PNG, BMP, GIF, WebP, etc.");
+         }
       }
 
    
