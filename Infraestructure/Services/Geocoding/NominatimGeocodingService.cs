@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Net.Http.Json;
+using Application.Exceptions;
 using Domain.Interfaces.Services;
 
 namespace Infraestructure.Services.Geocoding
@@ -15,13 +16,14 @@ namespace Infraestructure.Services.Geocoding
 
       public async Task<GeocodingResult> GeocodificarAsync(string direccion)
       {
-
-         var response = await _http.GetFromJsonAsync<List<NominatimResponse>>(
+         try
+         {
+            var response = await _http.GetFromJsonAsync<List<NominatimResponse>>(
             $"search?q={Uri.EscapeDataString(direccion)}&format=json&addressdetails=1&limit=1"
             );
 
          var item = response?.FirstOrDefault()
-             ?? throw new Exception("No se pudo geocodificar la dirección");
+             ?? throw new RecursoNoEncontradoException("No se pudo geocodificar la dirección");
 
          var address = item.address;
 
@@ -32,6 +34,11 @@ namespace Infraestructure.Services.Geocoding
              Latitud: double.Parse(item.lat, CultureInfo.InvariantCulture),
              Longitud: double.Parse(item.lon, CultureInfo.InvariantCulture)
          );
+         }
+         catch (HttpRequestException)
+         {
+            throw new ServicioExternoException("El servicio de geolocalización no está disponible");
+         }
       }
    }
 
