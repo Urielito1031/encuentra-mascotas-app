@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Enums;
+﻿using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
@@ -23,8 +18,7 @@ namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
      string Provincia,
      string Distrito,
      string Barrio,
-     double Latitud,
-     double Longitud,
+
 
      //Publicacion
      string DescripcionPublicacion,

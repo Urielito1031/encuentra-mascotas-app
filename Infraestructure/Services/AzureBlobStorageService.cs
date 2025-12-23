@@ -1,8 +1,7 @@
 ﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models; 
+using Azure.Storage.Blobs.Models;
 using Domain.Interfaces.Services;
-using Infraestructure.Storage;
-using Microsoft.AspNetCore.Http;
+using Infraestructure.Services.Storage;
 using Microsoft.Extensions.Options;
 
 namespace EncuentraMascotas.Infrastructure.Services
@@ -16,29 +15,26 @@ namespace EncuentraMascotas.Infrastructure.Services
          _clientBlob = new BlobServiceClient(options.Value.ConnectionString);
       }
 
-      public async Task<string> SubirArchivoAsync(IFormFile archivo, string nombreContenedor)
+      public async Task<string> SubirArchivoAsync(Stream archivoStream, string nombreArchivo, string contentType, string nombreContenedor)
       {
-         BlobContainerClient contenedor = _clientBlob.GetBlobContainerClient(nombreContenedor);
-
+         var contenedor = _clientBlob.GetBlobContainerClient(nombreContenedor);
          await contenedor.CreateIfNotExistsAsync();
          await contenedor.SetAccessPolicyAsync(PublicAccessType.Blob);
 
-         string extension = Path.GetExtension(archivo.FileName);
-         string nombreArchivo = $"{Guid.NewGuid()}{extension}";
+         string extension = Path.GetExtension(nombreArchivo);
+         string nombreFinal = $"{Guid.NewGuid()}{extension}";
 
-         //referencia al archivo (Blob) aunque no exista todavia
-         BlobClient clienteBlob = contenedor.GetBlobClient(nombreArchivo);
+         BlobClient clienteBlob = contenedor.GetBlobClient(nombreFinal);
 
-         
          var opciones = new BlobUploadOptions
          {
-            HttpHeaders = new BlobHttpHeaders { ContentType = archivo.ContentType }
+            HttpHeaders = new BlobHttpHeaders { ContentType = contentType }
          };
 
-         using (var stream = archivo.OpenReadStream())
-         {
-            await clienteBlob.UploadAsync(stream, opciones);
-         }
+         // aseguro que el stram esté al principio antes de leerlo
+         if (archivoStream.CanSeek) archivoStream.Position = 0;
+
+         await clienteBlob.UploadAsync(archivoStream, opciones);
 
          return clienteBlob.Uri.ToString();
       }

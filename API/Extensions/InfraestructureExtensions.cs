@@ -1,10 +1,11 @@
-﻿using Domain.Interfaces.Repositories;
+﻿using Application.Common.Images;
+using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using EncuentraMascotas.Infrastructure.Services;
 using Infraestructure;
 using Infraestructure.Repositories;
 using Infraestructure.Services;
-using Infraestructure.Storage;
+using Infraestructure.Services.Storage;
 
 namespace encuentra_mascotas.Extensions
 {
@@ -16,6 +17,7 @@ namespace encuentra_mascotas.Extensions
 
       {
          services.AddScoped<IImagenEmbeddingService, ImagenEmbeddingService>();
+         services.AddScoped<IProcesadorDeFotos, ProcesadorDeFotosService>();
 
          services.Configure<AzureBlobOptions>(
             configuration.GetSection(AzureBlobOptions.SectionName));

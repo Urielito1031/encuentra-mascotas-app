@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-
-namespace Domain.Interfaces.Services
+﻿namespace Domain.Interfaces.Services
 {
    public interface IFileStorageService
    {
-      Task<string> SubirArchivoAsync(IFormFile archivo, string nombreContenedor);
+      Task<string> SubirArchivoAsync(Stream archivoStream, string nombreArchivo, string contentType, string nombreContenedor);
+
       Task EliminarArchivoAsync(string ruta, string nombreContenedor);
+
    }
 }

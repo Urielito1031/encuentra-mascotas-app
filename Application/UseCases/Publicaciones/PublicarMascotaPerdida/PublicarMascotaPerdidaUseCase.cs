@@ -1,95 +1,105 @@
-﻿using Domain.Entities;
+﻿using Application.Common.Images;
+using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
 using MediatR;
 
 namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
 {
-   public class PublicarMascotaPerdidaUseCase : IRequestHandler<PublicarMascotaPerdidaCommand, PublicarMascotaPerdidaResult>
+   public class PublicarMascotaPerdidaUseCase
+       : IRequestHandler<PublicarMascotaPerdidaCommand, PublicarMascotaPerdidaResult>
    {
+      private readonly IMascotaRepository _mascotaRepo;
+      private readonly IUbicacionRepository _ubicacionRepo;
+      private readonly IPublicacionRepository _publicacionRepo;
+      private readonly IGeocodingService _geocodingService;
+      private readonly IProcesadorDeFotos _procesadorDeFotos;
 
-      private readonly IMascotaRepository       _mascotaRepository;
-      private readonly IUbicacionRepository     _ubicacionRepository;
-      private readonly IPublicacionRepository   _publicacionRepository;
-      private readonly IFileStorageService      _fileStorage;
-      private readonly IImagenEmbeddingService  _embeddingService;
-      private readonly IGeocodingService        _geocodingService;
-
-      public PublicarMascotaPerdidaUseCase(IMascotaRepository mascotaRepository,
-         IUbicacionRepository ubicacionRepository, 
-         IPublicacionRepository publicacionRepository,
-         IFileStorageService fileStorage,
-         IImagenEmbeddingService embeddingService,
-         IGeocodingService geocodingService)
+      public PublicarMascotaPerdidaUseCase(
+          IMascotaRepository mascotaRepo,
+          IUbicacionRepository ubicacionRepo,
+          IPublicacionRepository publicacionRepo,
+          IGeocodingService geocodingService,
+          IProcesadorDeFotos procesadorDeFotos)
       {
-         _mascotaRepository = mascotaRepository;
-         _ubicacionRepository = ubicacionRepository;
-         _publicacionRepository = publicacionRepository;
-         _fileStorage = fileStorage;
-         _embeddingService = embeddingService;
+         _mascotaRepo = mascotaRepo;
+         _ubicacionRepo = ubicacionRepo;
+         _publicacionRepo = publicacionRepo;
          _geocodingService = geocodingService;
+         _procesadorDeFotos = procesadorDeFotos;
       }
 
-      //para una publicacion completa necesitamos la ubicacion, mascota y al menos una foto
-      public async Task<PublicarMascotaPerdidaResult> Handle(PublicarMascotaPerdidaCommand request, CancellationToken cancellationToken)
+      public async Task<PublicarMascotaPerdidaResult> Handle(
+          PublicarMascotaPerdidaCommand request,
+          CancellationToken cancellationToken)
       {
-
-         var geocoding = await _geocodingService.GeocodificarAsync(
-            $"{request.Barrio},{request.Distrito},{request.Provincia}"
-            );
-
-         var ubicacion = Ubicacion.Crear(
-            geocoding.Provincia,
-            geocoding.Barrio,
-            geocoding.Distrito,
-            geocoding.Latitud,
-            geocoding.Longitud
-            );
-         await _ubicacionRepository.AgregarAsync( ubicacion );
-
-         var mascota = Mascota.Crear(
-            request.NombreMascota,
-            request.RazaId,
-            request.ColorPrincipal,
-            request.DescripcionMascota,
-            request.TamanioMascota,
-            request.Sexo
-            );
-
-         await _mascotaRepository.AgregarAsync( mascota );
+         var ubicacion = await CrearUbicacionAsync(request);
+         var mascota = CrearMascota(request);
 
          var publicacion = Publicacion.Crear(
-            request.UsuarioId,
-            mascota,
-            ubicacion,
-            request.DescripcionPublicacion,
-            request.FechaPerdido,
-            request.EstadoMascota
-            );
+             request.UsuarioId,
+             mascota,
+             ubicacion,
+             request.DescripcionPublicacion,
+             request.FechaPerdido,
+             request.EstadoMascota
+         );
 
-         int orden = 0;
-         foreach(var foto in request.Fotos)
+         var fotosSubidas = new List<string>();
+
+         try
          {
-            var url = await _fileStorage.SubirArchivoAsync(foto, "publicaciones");
-            using var stream = foto.OpenReadStream();
-            var embedding = _embeddingService.GenerarEmbedding( stream );
+            int orden = 0;
+            foreach (var archivo in request.Fotos)
+            {
+               var foto = await _procesadorDeFotos.ProcesarAsync(
+                   archivo,
+                   publicacion.Id,
+                   orden++,
+                   cancellationToken);
 
-            var fotoEntidad = Foto.Crear(
-               url,
-               publicacion.Id,
-               embedding,
-               orden++
-               );
-            
-            publicacion.AgregarFoto(fotoEntidad);
+               fotosSubidas.Add(foto.ImagenUrl);
+               publicacion.AgregarFoto(foto);
+            }
+
+            await _ubicacionRepo.AgregarAsync(ubicacion);
+            await _mascotaRepo.AgregarAsync(mascota);
+            await _publicacionRepo.AgregarAsync(publicacion);
+
+            return new PublicarMascotaPerdidaResult(publicacion.Id);
          }
-         await _publicacionRepository.AgregarAsync( publicacion );
+         catch
+         {
+            foreach (var url in fotosSubidas)
+            {
+               await _procesadorDeFotos.CompensarAsync(url);
+            }
+            throw;
+         }
+      }
 
-         return new PublicarMascotaPerdidaResult(publicacion.Id);
+      private async Task<Ubicacion> CrearUbicacionAsync(PublicarMascotaPerdidaCommand request)
+      {
+         var geo = await _geocodingService.GeocodificarAsync(
+             $"{request.Barrio},{request.Distrito},{request.Provincia}");
 
+         return Ubicacion.Crear(
+             geo.Provincia,
+             geo.Barrio,
+             geo.Distrito,
+             geo.Latitud,
+             geo.Longitud);
+      }
 
-
-
+      private Mascota CrearMascota(PublicarMascotaPerdidaCommand request)
+      {
+         return Mascota.Crear(
+             request.NombreMascota,
+             request.RazaId,
+             request.ColorPrincipal,
+             request.DescripcionMascota,
+             request.TamanioMascota,
+             request.Sexo);
       }
    }
 }

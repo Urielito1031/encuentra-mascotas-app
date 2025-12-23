@@ -18,8 +18,7 @@ namespace encuentra_mascotas.Contracts.Requests
       public string Provincia { get; set; }
       public string Distrito { get; set; }
       public string Barrio { get; set; }
-      public double Latitud { get; set; }
-      public double Longitud { get; set; }
+
 
       // Publicación
       public string DescripcionPublicacion { get; set; }
@@ -46,9 +45,7 @@ namespace encuentra_mascotas.Contracts.Requests
             Provincia: Provincia,
             Distrito: Distrito,
             Barrio: Barrio,
-            Latitud: Latitud,
-            Longitud: Longitud,
-
+            
             //publicacion
             DescripcionPublicacion: DescripcionPublicacion,
             FechaPerdido: FechaPerdido,
