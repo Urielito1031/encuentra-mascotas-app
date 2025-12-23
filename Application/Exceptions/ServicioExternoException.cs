@@ -8,7 +8,7 @@ namespace Application.Exceptions
 {
    public sealed class ServicioExternoException : ApplicationException
    {
-      public ServicioExternoException(string message) : base(message, 503)
+      public ServicioExternoException(string message) : base(message)
       {
       }
    }

@@ -1,5 +1,6 @@
 ﻿
 using Domain.Interfaces.Services;
+using Infraestructure.Exceptions;
 using Pgvector;
 
 namespace Infraestructure.Services
@@ -19,7 +20,7 @@ namespace Infraestructure.Services
          float[] floatArray = _clipService.ObtenerImagenEmbedding(imagen);
          if (floatArray.Length != 512)
          {
-            throw new InvalidOperationException($"Vector debe tener 512 dimensiones, tiene {imagen.Length}");
+            throw new EmbeddingException($"Vector debe tener 512 dimensiones, tiene {floatArray.Length}");
          }
 
          

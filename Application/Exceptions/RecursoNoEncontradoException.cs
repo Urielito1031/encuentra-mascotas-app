@@ -8,7 +8,7 @@ namespace Application.Exceptions
 {
    public sealed class RecursoNoEncontradoException : ApplicationException
    {
-      public RecursoNoEncontradoException(string message) : base(message, 404)
+      public RecursoNoEncontradoException(string message) : base(message)
       {
       }
    }

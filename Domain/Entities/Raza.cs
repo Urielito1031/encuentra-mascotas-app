@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Exceptions;
 
 namespace Domain.Entities
 {
@@ -15,7 +16,7 @@ namespace Domain.Entities
 
       public static Raza Crear(string nombre)
       {
-         if (string.IsNullOrWhiteSpace(nombre)) throw new Exception("Nombre inválido.");
+         if (string.IsNullOrWhiteSpace(nombre)) throw new DomainException("Nombre inválido.");
          return new Raza { Id = Guid.NewGuid(), Nombre = nombre.Trim() };
       }
 

@@ -1,5 +1,8 @@
-using encuentra_mascotas.Extensions;
+﻿using encuentra_mascotas.Extensions;
 using Microsoft.AspNetCore.Diagnostics;
+using ApplicationException = Application.Exceptions.ApplicationException;
+using InfraestructureException = Infraestructure.Exceptions.InfraestructureException;
+using DomainException = Domain.Exceptions.DomainException;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,17 +21,29 @@ builder.Services.AddExternalServices(builder.Configuration);
 
 var app = builder.Build();
 
-app.UseExceptionHandler(builder =>
+app.UseExceptionHandler(appBuilder =>
 {
-   builder.Run(async context =>
+   appBuilder.Run(async context =>
    {
-      var error = context.Features
+      var exception = context.Features
           .Get<IExceptionHandlerFeature>()?
           .Error;
 
-      if (error is Application.Exceptions.ApplicationException appEx)
+      var logger = context.RequestServices
+          .GetRequiredService<ILogger<Program>>();
+      
+      //para ver error completo.
+      logger.LogError(exception, "Unhandled exception");
+
+      if (exception is ApplicationException appEx)
       {
-         context.Response.StatusCode = appEx.StatusCode;
+         int statusCode = appEx switch
+         {
+            Application.Exceptions.RecursoNoEncontradoException => 404,
+            Application.Exceptions.ServicioExternoException => 503,
+            _ => 500
+         };
+         context.Response.StatusCode = statusCode;
          await context.Response.WriteAsJsonAsync(new
          {
             error = appEx.Message
@@ -36,13 +51,34 @@ app.UseExceptionHandler(builder =>
          return;
       }
 
+      if (exception is DomainException domainEx)
+      {
+         context.Response.StatusCode = 409; // Conflicto de reglas de negocio
+         await context.Response.WriteAsJsonAsync(new
+         {
+            error = domainEx.Message
+         });
+         return;
+      }
+
+      if (exception is InfraestructureException infraEx)
+      {
+         context.Response.StatusCode = 500; // Fallos de infraestructura
+         await context.Response.WriteAsJsonAsync(new
+         {
+            error = "Ocurrió un error interno"
+         });
+         return;
+      }
+
       context.Response.StatusCode = 500;
       await context.Response.WriteAsJsonAsync(new
       {
-         error = "Ocurri� un error inesperado"
+         error = "Ocurrió un error inesperado"
       });
    });
 });
+
 if (app.Environment.IsDevelopment())
 {
    app.UseSwagger();

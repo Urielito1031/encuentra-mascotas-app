@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Net.Http.Json;
-using Application.Exceptions;
+using Infraestructure.Exceptions;
 using Domain.Interfaces.Services;
 
 namespace Infraestructure.Services.Geocoding
@@ -23,7 +23,7 @@ namespace Infraestructure.Services.Geocoding
             );
 
          var item = response?.FirstOrDefault()
-             ?? throw new RecursoNoEncontradoException("No se pudo geocodificar la dirección");
+             ?? throw new GeocodingException("No se pudo geocodificar la dirección");
 
          var address = item.address;
 
@@ -37,7 +37,7 @@ namespace Infraestructure.Services.Geocoding
          }
          catch (HttpRequestException)
          {
-            throw new ServicioExternoException("El servicio de geolocalización no está disponible");
+            throw new GeocodingException("El servicio de geolocalización no está disponible");
          }
       }
    }
