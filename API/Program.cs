@@ -13,7 +13,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // FluentValidation
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services
+   .AddFluentValidationAutoValidation()
+   .AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 // Application
 builder.Services.AddApplication();
