@@ -1,4 +1,7 @@
 ﻿using Application.UseCases.Publicaciones.CrearPublicacion;
+using FluentValidation;
+using Application.Behaviors;
+using MediatR;
 
 namespace encuentra_mascotas.Extensions
 {
@@ -8,6 +11,10 @@ namespace encuentra_mascotas.Extensions
       {
          services.AddMediatR(cfg =>
              cfg.RegisterServicesFromAssembly(typeof(CrearPublicacionCommand).Assembly));
+
+         services.AddValidatorsFromAssembly(typeof(CrearPublicacionCommand).Assembly);
+
+         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
          return services;
       }

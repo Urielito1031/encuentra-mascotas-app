@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UseCases\Publicaciones\AgregarAFavorito\**" />
+    <Compile Remove="UseCases\Publicaciones\AgregarComentario\**" />
+    <Compile Remove="UseCases\Publicaciones\CambiarEstadoPublicacion\**" />
+    <EmbeddedResource Remove="UseCases\Publicaciones\AgregarAFavorito\**" />
+    <EmbeddedResource Remove="UseCases\Publicaciones\AgregarComentario\**" />
+    <EmbeddedResource Remove="UseCases\Publicaciones\CambiarEstadoPublicacion\**" />
+    <None Remove="UseCases\Publicaciones\AgregarAFavorito\**" />
+    <None Remove="UseCases\Publicaciones\AgregarComentario\**" />
+    <None Remove="UseCases\Publicaciones\CambiarEstadoPublicacion\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.2" />
     <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
@@ -17,9 +29,6 @@
 
   <ItemGroup>
     <Folder Include="UseCases\Imagenes\" />
-    <Folder Include="UseCases\Publicaciones\AgregarAFavorito\" />
-    <Folder Include="UseCases\Publicaciones\AgregarComentario\" />
-    <Folder Include="UseCases\Publicaciones\CambiarEstadoPublicacion\" />
   </ItemGroup>
 
 </Project>
