@@ -1,12 +1,13 @@
 using FluentValidation;
-using Application.UseCases.Publicaciones.PublicarMascotaPerdida;
+using encuentra_mascotas.Contracts.Requests;
+using Domain.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Application.Validators
 {
-   public class PublicarMascotaPerdidaCommandValidator : AbstractValidator<PublicarMascotaPerdidaCommand>
+   public class PublicarMascotaPerdidaRequestValidator : AbstractValidator<PublicarMascotaPerdidaRequest>
    {
-      public PublicarMascotaPerdidaCommandValidator()
+      public PublicarMascotaPerdidaRequestValidator()
       {
          // Mascota
          RuleFor(x => x.NombreMascota)

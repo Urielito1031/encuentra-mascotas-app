@@ -14,8 +14,6 @@ namespace encuentra_mascotas.Extensions
 
          services.AddValidatorsFromAssembly(typeof(CrearPublicacionCommand).Assembly);
 
-         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
          return services;
       }
    }
