@@ -3,7 +3,7 @@ using Domain.Exceptions;
 using Infraestructure.Exceptions;
 
 
-namespace API.Middlewares
+namespace encuentra_mascotas.Middlewares
 {
    public static class GlobalExceptionHandler
    {

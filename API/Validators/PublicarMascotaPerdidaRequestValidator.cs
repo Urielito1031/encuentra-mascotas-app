@@ -1,18 +1,16 @@
+﻿using encuentra_mascotas.Contracts.Requests;
 using FluentValidation;
-using encuentra_mascotas.Contracts.Requests;
-using Domain.Enums;
-using Microsoft.AspNetCore.Http;
 
-namespace Application.Validators
+namespace encuentra_mascotas.Validators
 {
    public class PublicarMascotaPerdidaRequestValidator : AbstractValidator<PublicarMascotaPerdidaRequest>
    {
       public PublicarMascotaPerdidaRequestValidator()
       {
-         // Mascota
+         //Mascota
          RuleFor(x => x.NombreMascota)
-            .NotEmpty().WithMessage("El nombre de la mascota es obligatorio.")
-            .MaximumLength(100).WithMessage("El nombre no puede exceder 100 caracteres.");
+               .NotEmpty().WithMessage("El nombre de la mascota es obligatorio.")
+               .MaximumLength(100).WithMessage("El nombre no puede exceder 100 caracteres.");
 
          RuleFor(x => x.RazaId)
             .NotEmpty().WithMessage("La raza es obligatoria.");
@@ -23,7 +21,7 @@ namespace Application.Validators
 
          RuleFor(x => x.DescripcionMascota)
             .NotEmpty().WithMessage("La descripción de la mascota es obligatoria.")
-            .MaximumLength(500).WithMessage("La descripción no puede exceder 500 caracteres.");
+            .MaximumLength(200).WithMessage("La descripción no puede exceder 200 caracteres.");
 
          RuleFor(x => x.TamanioMascota)
             .IsInEnum().WithMessage("El tamaño de la mascota es inválido.");
@@ -58,14 +56,26 @@ namespace Application.Validators
 
          // Fotos
          RuleFor(x => x.Fotos)
+            .Cascade(CascadeMode.Stop)
             .NotNull().WithMessage("Debe incluir al menos una foto.")
-            .Must(fotos => fotos != null && fotos.Count > 0).WithMessage("Debe incluir al menos una foto.")
-            .Must(fotos => fotos != null && fotos.Count <= 10).WithMessage("No puede incluir más de 10 fotos.")
-            .ForEach(foto => foto
-               .Must(f => f.Length > 0).WithMessage("La foto no puede estar vacía.")
-               .Must(f => f.Length <= 5 * 1024 * 1024).WithMessage("La foto no puede exceder 5MB.")
-               .Must(f => IsValidImage(f)).WithMessage("Solo se permiten archivos de imagen (JPEG, PNG, etc.)."));
+            .Must(f => f.Count > 0).WithMessage("Debe incluir al menos una foto.")
+            .Must(f => f.Count <= 10).WithMessage("No puede incluir más de 10 fotos.");
+
+
+         //Validación individual de cada foto
+         RuleForEach(x => x.Fotos)
+            .Cascade(CascadeMode.Stop)
+            .NotNull().WithMessage("La foto no puede estar vacía.")
+            .Must(f => f.Length > 0).WithMessage("La foto no puede estar vacía.")
+            .Must(f => f.Length <= 5 * 1024 * 1024)
+            .WithMessage("La foto no puede exceder 5MB.")
+            .Must(IsValidImage)
+         .WithMessage("Solo se permiten archivos de imagen (JPEG, PNG, etc.).")
+         .When(x => x.Fotos != null && x.Fotos.Count > 0);
+
       }
+
+
 
       private bool IsValidImage(IFormFile file)
       {
@@ -73,5 +83,7 @@ namespace Application.Validators
          var extension = Path.GetExtension(file.FileName).ToLower();
          return allowedExtensions.Contains(extension);
       }
+   
    }
 }
+

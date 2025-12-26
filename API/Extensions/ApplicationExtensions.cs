@@ -1,6 +1,6 @@
-﻿using Application.UseCases.Publicaciones.CrearPublicacion;
+﻿using Application.Behaviors;
+using Application.UseCases.Publicaciones.PublicarMascotaPerdida;
 using FluentValidation;
-using Application.Behaviors;
 using MediatR;
 
 namespace encuentra_mascotas.Extensions
@@ -9,10 +9,18 @@ namespace encuentra_mascotas.Extensions
    {
       public static IServiceCollection AddApplication(this IServiceCollection services)
       {
-         services.AddMediatR(cfg =>
-             cfg.RegisterServicesFromAssembly(typeof(CrearPublicacionCommand).Assembly));
+         // ✅ Assembly CORRECTO: Application (donde están los handlers)
+         var assembly = typeof(PublicarMascotaPerdidaCommand).Assembly;
 
-         services.AddValidatorsFromAssembly(typeof(CrearPublicacionCommand).Assembly);
+         // MediatR
+         services.AddMediatR(cfg =>
+         {
+            cfg.RegisterServicesFromAssembly(assembly);
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+         });
+
+         // Validadores de Application (Commands)
+         services.AddValidatorsFromAssembly(assembly);
 
          return services;
       }
