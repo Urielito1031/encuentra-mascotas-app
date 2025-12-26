@@ -1,7 +1,7 @@
-﻿using Application.Common.Images;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Domain.Interfaces;
 using MediatR;
 
 namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
@@ -14,19 +14,22 @@ namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
       private readonly IPublicacionRepository _publicacionRepo;
       private readonly IGeocodingService _geocodingService;
       private readonly IProcesadorDeFotos _procesadorDeFotos;
+      private readonly IUnitOfWork _unitOfWork;
 
       public PublicarMascotaPerdidaUseCase(
           IMascotaRepository mascotaRepo,
           IUbicacionRepository ubicacionRepo,
           IPublicacionRepository publicacionRepo,
           IGeocodingService geocodingService,
-          IProcesadorDeFotos procesadorDeFotos)
+          IProcesadorDeFotos procesadorDeFotos,
+          IUnitOfWork unitOfWork)
       {
          _mascotaRepo = mascotaRepo;
          _ubicacionRepo = ubicacionRepo;
          _publicacionRepo = publicacionRepo;
          _geocodingService = geocodingService;
          _procesadorDeFotos = procesadorDeFotos;
+         _unitOfWork = unitOfWork;
       }
 
       public async Task<PublicarMascotaPerdidaResult> Handle(
@@ -65,6 +68,8 @@ namespace Application.UseCases.Publicaciones.PublicarMascotaPerdida
             await _ubicacionRepo.AgregarAsync(ubicacion);
             await _mascotaRepo.AgregarAsync(mascota);
             await _publicacionRepo.AgregarAsync(publicacion);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return new PublicarMascotaPerdidaResult(publicacion.Id);
          }

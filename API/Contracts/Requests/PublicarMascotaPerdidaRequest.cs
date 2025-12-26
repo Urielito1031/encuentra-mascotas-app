@@ -1,5 +1,4 @@
 ﻿using Application.UseCases.Publicaciones.PublicarMascotaPerdida;
-using Azure.Core;
 using Domain.Enums;
 
 namespace encuentra_mascotas.Contracts.Requests

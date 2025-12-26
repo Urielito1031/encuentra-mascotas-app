@@ -1,6 +1,6 @@
-﻿using Application.Common.Images;
-using Domain.Interfaces.Repositories;
+﻿using Domain.Interfaces.Repositories;
 using Domain.Interfaces.Services;
+using Domain.Interfaces;
 using EncuentraMascotas.Infrastructure.Services;
 using Infraestructure;
 using Infraestructure.Repositories;
@@ -24,6 +24,7 @@ namespace encuentra_mascotas.Extensions
         
          services.AddScoped<IFileStorageService, AzureBlobStorageService>();
 
+         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
          services.AddScoped<IPublicacionRepository, PublicacionRepository>();
          services.AddScoped<IUbicacionRepository, UbicacionRepository>();

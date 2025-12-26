@@ -1,8 +1,7 @@
-﻿using Application.Common.Images;
-using Application.Common.Storage;
+﻿using Domain.Interfaces.Services;
 using Domain.Entities;
-using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
+using Infraestructure.Services.Storage;
 
 namespace Infraestructure.Services
 {

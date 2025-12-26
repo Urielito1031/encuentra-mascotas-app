@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Infraestructure.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Repositories
 {
@@ -24,6 +25,15 @@ namespace Infraestructure.Repositories
       {
          await _context.Publicaciones.AddAsync(publicacion);
          await _context.SaveChangesAsync();
+      }
+
+      public async Task<IReadOnlyList<Publicacion>> ObtenerTodasAsync()
+      {
+         return await _context.Publicaciones
+             .Include(p => p.Mascota)
+             .Include(p => p.Ubicacion)
+             .Include(p => p.Fotos)
+             .ToListAsync();
       }
    }
 }

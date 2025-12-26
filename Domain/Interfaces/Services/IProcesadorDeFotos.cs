@@ -1,8 +1,7 @@
-﻿
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.Common.Images
+namespace Domain.Interfaces.Services
 {
    public interface IProcesadorDeFotos
    {

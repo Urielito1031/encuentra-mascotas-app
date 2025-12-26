@@ -1,7 +1,6 @@
 ﻿using encuentra_mascotas.Extensions;
 using API.Middlewares;
 using FluentValidation.AspNetCore;
-using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 
 
@@ -13,7 +12,6 @@ builder.Services.AddSwaggerGen();
 
 // FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // Application
 builder.Services.AddApplication();

@@ -1,5 +1,4 @@
-﻿using Application.UseCases.Publicaciones.PublicarMascotaPerdida;
-using encuentra_mascotas.Contracts.Requests;
+﻿using encuentra_mascotas.Contracts.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,9 +1,7 @@
 using Application.Exceptions;
 using Domain.Exceptions;
 using Infraestructure.Exceptions;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+
 
 namespace API.Middlewares
 {
