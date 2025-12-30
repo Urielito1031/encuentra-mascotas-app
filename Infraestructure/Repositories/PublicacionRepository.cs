@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using Infraestructure.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Repositories
 {
@@ -27,13 +21,9 @@ namespace Infraestructure.Repositories
          await _context.SaveChangesAsync();
       }
 
-      public async Task<IReadOnlyList<Publicacion>> ObtenerTodasAsync()
+      public IQueryable<Publicacion> ObtenerQueryable()
       {
-         return await _context.Publicaciones
-             .Include(p => p.Mascota)
-             .Include(p => p.Ubicacion)
-             .Include(p => p.Fotos)
-             .ToListAsync();
+         return _context.Publicaciones;
       }
    }
 }

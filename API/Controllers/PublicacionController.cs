@@ -1,4 +1,5 @@
-﻿using encuentra_mascotas.Contracts.Requests;
+﻿using Application.UseCases.Queries.Publicaciones;
+using encuentra_mascotas.Contracts.Requests;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +44,14 @@ namespace encuentra_mascotas.Controllers
             new { id = result.PublicacionId }, 
             result
             );
+      }
+
+      [HttpGet]
+      public async Task<IActionResult> ListarPublicaciones()
+      {
+         var query = new ObtenerFeedQuery();
+         var result = await _mediator.Send(query);
+         return Ok(result.Publicaciones);
       }
    }
 }
