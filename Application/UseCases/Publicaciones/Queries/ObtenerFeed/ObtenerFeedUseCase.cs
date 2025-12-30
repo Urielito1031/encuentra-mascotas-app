@@ -1,4 +1,5 @@
 using Application.UseCases.Publicaciones.Queries.ObtenerTodasPublicaciones;
+using Domain.Entities;
 using Domain.Interfaces.Repositories;
 using MediatR;
 using Microsoft.EntityFrameworkCore; 
@@ -17,7 +18,9 @@ namespace Application.UseCases.Queries.Publicaciones
       public async Task<ObtenerFeedResult> Handle(ObtenerFeedQuery request, CancellationToken cancellationToken)
       {
          var query = _publicacionRepository.ObtenerQueryable();
-         
+
+         query = ValidarFiltros(request, query);
+
          query = query.OrderByDescending(p => p.FechaPerdido);
 
          var resultado = await query.Select(p => new PublicacionFeedDto(
@@ -51,11 +54,27 @@ namespace Application.UseCases.Queries.Publicaciones
              p.Comentarios.Count,
              p.Favoritos.Count
          ))
-         .ToListAsync(cancellationToken); 
+         .ToListAsync(cancellationToken);
 
          return new ObtenerFeedResult(resultado);
       }
 
+      private static IQueryable<Publicacion> ValidarFiltros(ObtenerFeedQuery request, IQueryable<Domain.Entities.Publicacion> query)
+      {
+         if (!string.IsNullOrEmpty(request.Provincia))
+         {
+            query = query.Where(p => p.Ubicacion.Provincia == request.Provincia);
+         }
+         if (!string.IsNullOrEmpty(request.Distrito))
+         {
+            query = query.Where(p => p.Ubicacion.Distrito == request.Distrito);
+         }
+         if (request.EstadoMascota.HasValue)
+         {
+            query = query.Where(p => (int)p.Estado == request.EstadoMascota.Value);
+         }
 
+         return query;
+      }
    }
 }

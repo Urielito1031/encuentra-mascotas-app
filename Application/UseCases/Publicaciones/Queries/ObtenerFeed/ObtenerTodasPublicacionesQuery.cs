@@ -5,7 +5,11 @@ namespace Application.UseCases.Queries.Publicaciones
 {
 
    //para agregar filtros a futuro con ObtenerFeedQuery
-   public record ObtenerFeedQuery : IRequest<ObtenerFeedResult>;
+   public record ObtenerFeedQuery(
+      string? Provincia,
+      string? Distrito,
+      int? EstadoMascota
+      ) : IRequest<ObtenerFeedResult>;
 
    public record ObtenerFeedResult(IEnumerable<PublicacionFeedDto> Publicaciones);
 }

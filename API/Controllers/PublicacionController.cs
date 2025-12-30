@@ -49,6 +49,8 @@ namespace encuentra_mascotas.Controllers
       [HttpGet]
       public async Task<IActionResult> ListarPublicaciones()
       {
+         //TODO: implementar paginacion!
+
          var query = new ObtenerFeedQuery();
          var result = await _mediator.Send(query);
          return Ok(result.Publicaciones);
