@@ -71,7 +71,7 @@ namespace Application.UseCases.Queries.Publicaciones
          }
          if (request.EstadoMascota.HasValue)
          {
-            query = query.Where(p => (int)p.Estado == request.EstadoMascota.Value);
+            query = query.Where(p => (int)p.EstadoMascota == request.EstadoMascota.Value);
          }
 
          return query;
