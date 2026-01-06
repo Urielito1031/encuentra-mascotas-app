@@ -18,7 +18,13 @@ namespace Infraestructure.Repositories
       public async Task AgregarAsync(Publicacion publicacion)
       {
          await _context.Publicaciones.AddAsync(publicacion);
-         await _context.SaveChangesAsync();
+        
+      }
+
+      public async Task<Publicacion?> ObtenerPorIdAsync(Guid idPublicacion)
+      {
+         return await _context.Publicaciones.FindAsync(idPublicacion);
+       
       }
 
       public IQueryable<Publicacion> ObtenerQueryable()

@@ -7,5 +7,6 @@ namespace Domain.Interfaces.Repositories
    {
       Task AgregarAsync(Publicacion publicacion);
       IQueryable<Publicacion> ObtenerQueryable();
+      Task<Publicacion?> ObtenerPorIdAsync(Guid idPublicacion);
    }
 }
